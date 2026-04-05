@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architect Code Review POC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module" crossorigin src="/eustress-poc/assets/index-ChWRfTYG.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 p-8 font-mono">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4 text-blue-400">System Architect: Capability Evaluator</h1>
+    
+    <div class="mb-6">
+      <label class="block mb-2 text-sm text-gray-400">// Task: Secure S3 Deployment</label>
+      <textarea id="codeInput" class="w-full h-48 bg-black border border-gray-700 p-4 rounded text-green-500 focus:border-blue-500 outline-none" placeholder="Enter your Terraform or Policy code here..."></textarea>
+    </div>
+
+    <button id="submitBtn" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded transition-all">
+      Submit for Review
+    </button>
+
+    <div id="loading" class="hidden mt-8 text-yellow-500 animate-pulse">
+      [ANALYZING ARCHITECTURE FOR OUTCOME...]
+    </div>
+
+    <div id="resultCard" class="hidden mt-8 p-6 border rounded border-gray-700 bg-gray-800">
+      <div id="statusBadge" class="inline-block px-3 py-1 rounded text-xs font-bold mb-4"></div>
+      <div class="text-3xl font-bold mb-2"><span id="scoreDisplay">0</span>%</div>
+      <p id="critiqueDisplay" class="italic text-gray-300 border-l-4 border-gray-600 pl-4"></p>
+    </div>
+  </div>
+</body>
+</html>
