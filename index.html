@@ -3,32 +3,174 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Architect Code Review POC</title>
+  <title>Architect Pro | Performance Evaluator</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
-  <script type="module" crossorigin src="/eustress-poc/assets/index-ChWRfTYG.js"></script>
-</head>
-<body class="bg-gray-900 text-gray-100 p-8 font-mono">
-  <div class="max-w-3xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4 text-blue-400">System Architect: Capability Evaluator</h1>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#0b0e14',
+            panel: '#161922',
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
     
-    <div class="mb-6">
-      <label class="block mb-2 text-sm text-gray-400">// Task: Secure S3 Deployment</label>
-      <textarea id="codeInput" class="w-full h-48 bg-black border border-gray-700 p-4 rounded text-green-500 focus:border-blue-500 outline-none" placeholder="Enter your Terraform or Policy code here..."></textarea>
-    </div>
+    body { 
+      background: radial-gradient(circle at top left, #1a1c23, #0b0e14);
+      color: #cbd5e1;
+      height: 100vh;
+      overflow: hidden; /* Prevents whole-page scrolling */
+    }
+    
+    .glass {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    /* Custom Scrollbar for the Result Area */
+    
+    #resultCard::-webkit-scrollbar { width: 4px; }
+    
+    #resultCard::-webkit-scrollbar-track { background: transparent; }
+    
+    #resultCard::-webkit-scrollbar-thumb { background: #2d3139; border-radius: 10px; }
+  </style>
+  <script type="module" crossorigin src="/eustress-poc/assets/index-DJoRE9rk.js"></script>
+</head>
+<body class="p-4 md:p-6 font-sans">
 
-    <button id="submitBtn" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded transition-all">
-      Submit for Review
-    </button>
+  <div class="max-w-6xl mx-auto h-full flex flex-col">
+    
+    <header class="flex items-center justify-between mb-4 border-b border-white/5 pb-3">
+      <div>
+        <h1 class="text-lg font-black text-white tracking-tighter uppercase leading-none">
+          Architect<span class="text-blue-500">Pro</span>
+        </h1>
+        <p class="text-[9px] text-slate-500 font-mono mt-1 uppercase tracking-widest">Capability_Validator_v2.1</p>
+      </div>
+      <button id="nextScenario" class="text-[9px] font-bold uppercase tracking-widest text-slate-500 hover:text-white border border-slate-800 px-3 py-1.5 rounded-full transition-all">
+        Generate New Mission
+      </button>
+    </header>
 
-    <div id="loading" class="hidden mt-8 text-yellow-500 animate-pulse">
-      [ANALYZING ARCHITECTURE FOR OUTCOME...]
-    </div>
+    <section class="glass bg-blue-900/10 border-blue-500/20 p-4 rounded-2xl mb-4 relative overflow-hidden">
+      <div class="relative z-10">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[8px] bg-blue-500/20 text-blue-400 font-black px-1.5 py-0.5 rounded tracking-widest uppercase">Directive</span>
+          <h2 id="scenarioTitle" class="text-[11px] font-bold text-white tracking-tight uppercase italic">Initializing...</h2>
+        </div>
+        <p id="scenarioDesc" class="text-slate-400 text-xs leading-snug mb-3 max-w-4xl"></p>
+        <div id="constraintTags" class="flex flex-wrap gap-2"></div>
+      </div>
+    </section>
 
-    <div id="resultCard" class="hidden mt-8 p-6 border rounded border-gray-700 bg-gray-800">
-      <div id="statusBadge" class="inline-block px-3 py-1 rounded text-xs font-bold mb-4"></div>
-      <div class="text-3xl font-bold mb-2"><span id="scoreDisplay">0</span>%</div>
-      <p id="critiqueDisplay" class="italic text-gray-300 border-l-4 border-gray-600 pl-4"></p>
-    </div>
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-grow overflow-hidden mb-2">
+      
+      <div class="flex flex-col h-full gap-3">
+        <div class="group relative flex-grow flex flex-col">
+          <div class="absolute -top-2 left-4 bg-obsidian px-2 text-[9px] font-mono text-slate-600 z-10 uppercase tracking-widest">
+            Source_Input
+          </div>
+          <textarea id="codeInput" 
+            class="flex-grow w-full bg-black border border-slate-800 p-5 rounded-2xl text-emerald-400 font-mono text-xs focus:border-blue-500 focus:ring-0 outline-none transition-all shadow-inner resize-none"
+            placeholder="// Enter your configuration here..."></textarea>
+        </div>
+        <button id="submitBtn" 
+          class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-xl transition-all uppercase tracking-[0.2em] text-[11px] disabled:opacity-30">
+          Analyze Capability
+        </button>
+      </div>
+
+      <div class="flex flex-col h-full overflow-hidden">
+        <div id="feedbackContainer" class="glass h-full rounded-2xl flex flex-col relative overflow-hidden transition-all duration-500">
+          
+          <div class="bg-white/5 px-4 py-2 border-b border-white/5 flex justify-between items-center shrink-0">
+            <span class="text-[9px] font-black tracking-widest text-slate-600 uppercase">Analysis_Console</span>
+            <div id="loadingStatus" class="hidden flex items-center gap-2">
+              <span class="relative flex h-1.5 w-1.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-yellow-500"></span>
+              </span>
+              <span class="text-[9px] text-yellow-500 font-black uppercase">Thinking...</span>
+            </div>
+          </div>
+
+          <div id="placeholderText" class="flex-grow flex flex-col items-center justify-center p-8 opacity-20">
+            <p class="text-[10px] uppercase tracking-[0.3em] font-black">Awaiting Execution</p>
+          </div>
+
+          <div id="resultCard" class="hidden flex-grow overflow-y-auto p-6 space-y-6">
+            
+            <div class="flex items-center justify-between">
+              <div class="flex items-baseline gap-1">
+                <span id="scoreDisplay" class="text-6xl font-black text-white tracking-tighter leading-none">0</span>
+                <span class="text-xl font-bold text-slate-600">%</span>
+              </div>
+              <div id="statusBadge" class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-xl"></div>
+            </div>
+
+            <div class="space-y-4">
+              <div class="space-y-2">
+                <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-500">
+                  <span>Security</span>
+                  <span id="secValue" class="text-white">0%</span>
+                </div>
+                <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div id="secBar" class="h-full bg-blue-500 transition-all duration-1000 shadow-[0_0_8px_rgba(59,130,246,0.5)]" style="width: 0%"></div>
+                </div>
+              </div>
+              
+              <div class="space-y-2">
+                <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-500">
+                  <span>Efficiency</span>
+                  <span id="effValue" class="text-white">0%</span>
+                </div>
+                <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div id="effBar" class="h-full bg-blue-400 transition-all duration-1000" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-slate-500">
+                  <span>Quality</span>
+                  <span id="readValue" class="text-white">0%</span>
+                </div>
+                <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div id="readBar" class="h-full bg-emerald-500 transition-all duration-1000" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-black/40 border border-white/5">
+              <h4 class="text-[8px] font-black text-slate-600 uppercase tracking-widest mb-3">Architect Critique</h4>
+              <p id="critiqueDisplay" class="text-slate-300 text-[11px] leading-relaxed italic font-medium"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="mt-auto py-2 border-t border-white/5 flex justify-between items-center text-[9px] font-bold text-slate-600 uppercase tracking-widest">
+      <div class="flex items-center gap-3">
+        <span class="text-blue-500">● LIVE_SESSION</span>
+        <span>JC Pop Digital // Capability Labs</span>
+      </div>
+      <div class="opacity-50">Local Deployment v2.1.0</div>
+    </footer>
   </div>
+
 </body>
 </html>
