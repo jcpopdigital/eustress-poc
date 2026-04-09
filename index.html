@@ -40,6 +40,12 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     
+    #codeInput::-webkit-scrollbar { width: 4px; }
+    
+    #codeInput::-webkit-scrollbar-track { background: transparent; }
+    
+    #codeInput::-webkit-scrollbar-thumb { background: #2d3139; border-radius: 10px; }
+    
     /* Custom Scrollbar for the Result Area */
     
     #resultCard::-webkit-scrollbar { width: 4px; }
@@ -48,7 +54,7 @@
     
     #resultCard::-webkit-scrollbar-thumb { background: #2d3139; border-radius: 10px; }
   </style>
-  <script type="module" crossorigin src="/eustress-poc/assets/index-DfbqhHZA.js"></script>
+  <script type="module" crossorigin src="/eustress-poc/assets/index-BgtuDzdn.js"></script>
 </head>
 <body class="p-4 md:p-6 font-sans">
 
@@ -84,9 +90,12 @@
           <div class="absolute -top-2 left-4 bg-obsidian px-2 text-[9px] font-mono text-slate-600 z-10 uppercase tracking-widest">
             Source_Input
           </div>
-          <textarea id="codeInput" 
-            class="flex-grow w-full bg-black border border-slate-800 p-5 rounded-2xl text-emerald-400 font-mono text-xs focus:border-blue-500 focus:ring-0 outline-none transition-all shadow-inner resize-none"
-            placeholder="// Enter your configuration here..."></textarea>
+          <div id="editorWrap" class="flex-grow flex bg-black border border-slate-800 rounded-2xl overflow-hidden focus-within:border-blue-500 transition-all shadow-inner">
+            <div id="lineNumbers" class="py-5 pl-3 pr-2 text-right text-slate-600 font-mono text-xs leading-[1.65] select-none shrink-0 overflow-hidden">1</div>
+            <textarea id="codeInput" 
+              class="flex-grow bg-transparent py-5 pr-5 text-emerald-400 font-mono text-xs focus:ring-0 outline-none resize-none leading-[1.65]"
+              placeholder="// Enter your configuration here..." spellcheck="false"></textarea>
+          </div>
         </div>
         <button id="submitBtn" 
           class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-xl transition-all uppercase tracking-[0.2em] text-[11px] disabled:opacity-30">
