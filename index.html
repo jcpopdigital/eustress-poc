@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Architect Pro | Performance Evaluator</title>
+  <title>GrowthBook SDK Lab | Performance Evaluator</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -40,11 +40,89 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
     
-    #codeInput::-webkit-scrollbar { width: 4px; }
+    #codeInput::-webkit-scrollbar { width: 4px; height: 4px; }
     
     #codeInput::-webkit-scrollbar-track { background: transparent; }
     
     #codeInput::-webkit-scrollbar-thumb { background: #2d3139; border-radius: 10px; }
+    
+    #codePane {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    
+    #highlightLayer,
+    #codeInput {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      line-height: 1.65;
+      white-space: pre;
+      tab-size: 2;
+    }
+    
+    #highlightLayer {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      padding: 1.25rem 1.25rem 1.25rem 0;
+      overflow: hidden;
+      color: #d1d5db;
+      pointer-events: none;
+      user-select: none;
+    }
+    
+    #highlightLayer code {
+      display: block;
+      min-height: 100%;
+      padding: 0;
+      background: transparent;
+      color: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      white-space: pre;
+    }
+    
+    #codeInput {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      color: transparent;
+      caret-color: #34d399;
+      scrollbar-gutter: stable;
+      scrollbar-width: thin;
+      scrollbar-color: #2d3139 transparent;
+    }
+    
+    #codeInput::selection {
+      background: rgba(59, 130, 246, 0.35);
+      color: transparent;
+    }
+    
+    #codeInput::-moz-selection {
+      background: rgba(59, 130, 246, 0.35);
+      color: transparent;
+    }
+    
+    .token-comment { color: #6b7280; }
+    
+    .token-keyword { color: #c084fc; }
+    
+    .token-string { color: #fbbf24; }
+    
+    .token-number { color: #f97316; }
+    
+    .token-function { color: #60a5fa; }
+    
+    .token-property { color: #22d3ee; }
+    
+    .token-boolean { color: #fb7185; }
+    
+    .token-operator { color: #e5e7eb; }
+    
+    .token-placeholder { color: #f43f5e; font-weight: 700; }
     
     /* Custom Scrollbar for the Result Area */
     
@@ -54,7 +132,7 @@
     
     #resultCard::-webkit-scrollbar-thumb { background: #2d3139; border-radius: 10px; }
   </style>
-  <script type="module" crossorigin src="/eustress-poc/assets/index-BgtuDzdn.js"></script>
+  <script type="module" crossorigin src="/eustress-poc/assets/index-BtaiLh63.js"></script>
 </head>
 <body class="p-4 md:p-6 font-sans">
 
@@ -63,23 +141,29 @@
     <header class="flex items-center justify-between mb-4 border-b border-white/5 pb-3 shrink-0">
       <div>
         <h1 class="text-lg font-black text-white tracking-tighter uppercase leading-none">
-          Architect<span class="text-blue-500">Pro</span>
+          GrowthBook<span class="text-blue-500">SDK Lab</span>
         </h1>
-        <p class="text-[9px] text-slate-500 font-mono mt-1 uppercase tracking-widest">Capability_Validator_v2.1</p>
+        <p class="text-[9px] text-slate-500 font-mono mt-1 uppercase tracking-widest">Feature_Flag_Coach_v2.1</p>
       </div>
       <button id="nextScenario" class="text-[9px] font-bold uppercase tracking-widest text-slate-500 hover:text-white border border-slate-800 px-3 py-1.5 rounded-full transition-all">
-        Generate New Mission
+        Generate New Exercise
       </button>
     </header>
 
     <section class="glass bg-blue-900/10 border-blue-500/20 p-4 rounded-2xl mb-4 relative overflow-hidden shrink-0">
       <div class="relative z-10">
         <div class="flex items-center gap-2 mb-1">
-          <span class="text-[8px] bg-blue-500/20 text-blue-400 font-black px-1.5 py-0.5 rounded tracking-widest uppercase">Directive</span>
-          <h2 id="scenarioTitle" class="text-[11px] font-bold text-white tracking-tight uppercase italic">Initializing...</h2>
+          <span class="text-[8px] bg-blue-500/20 text-blue-400 font-black px-1.5 py-0.5 rounded tracking-widest uppercase">Exercise</span>
+          <span id="scenarioLevel" class="text-[8px] bg-emerald-500/20 text-emerald-400 font-black px-1.5 py-0.5 rounded tracking-widest uppercase">Level 1</span>
+          <h2 id="scenarioTitle" class="text-[11px] font-bold text-white tracking-tight uppercase italic">Cart Open A/B Test Tracking</h2>
         </div>
-        <p id="scenarioDesc" class="text-slate-400 text-xs leading-snug mb-3 max-w-4xl"></p>
-        <div id="constraintTags" class="flex flex-wrap gap-2"></div>
+        <p id="scenarioDesc" class="text-slate-400 text-xs leading-snug mb-3 max-w-4xl">Finish a beginner GrowthBook JavaScript SDK integration for a cart engagement experiment. Set user targeting attributes, initialize the SDK, and use the <code>cart-open-experiment</code> feature flag to decide which cart prompt to render while tracking whether the shopper actually opened the cart.</p>
+        <div id="constraintTags" class="flex flex-wrap gap-2">
+          <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded text-[8px] font-black tracking-widest">Set User Attributes</span>
+          <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded text-[8px] font-black tracking-widest">Initialize Before Evaluating</span>
+          <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded text-[8px] font-black tracking-widest">Use isOn("cart-open-experiment")</span>
+          <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded text-[8px] font-black tracking-widest">Track Whether The Cart Was Opened</span>
+        </div>
       </div>
     </section>
 
@@ -92,14 +176,83 @@
           </div>
           <div id="editorWrap" class="flex-grow flex bg-black border border-slate-800 rounded-2xl overflow-hidden focus-within:border-blue-500 transition-all shadow-inner min-h-0">
             <div id="lineNumbers" class="py-5 pl-3 pr-2 text-right text-slate-600 font-mono text-xs leading-[1.65] select-none shrink-0 overflow-hidden">1</div>
-            <textarea id="codeInput" 
-              class="flex-grow bg-transparent py-5 pr-5 text-emerald-400 font-mono text-xs focus:ring-0 outline-none resize-none leading-[1.65] overflow-auto"
-              placeholder="// Enter your configuration here..." spellcheck="false"></textarea>
+            <div id="codePane">
+              <pre id="highlightLayer" aria-hidden="true"><code id="highlightContent"></code></pre>
+              <textarea id="codeInput" 
+                class="bg-transparent py-5 pr-5 text-emerald-400 font-mono text-xs focus:ring-0 outline-none resize-none leading-[1.65] overflow-auto"
+                placeholder="// Fill in the missing GrowthBook JavaScript SDK code..." spellcheck="false">import { GrowthBook } from "@growthbook/growthbook";
+
+const growthbook = new GrowthBook({
+  apiHost: "https://cdn.growthbook.io",
+  clientKey: "sdk-abc123",
+  enableDevMode: true,
+  trackingCallback: (experiment, result) =&gt; {
+    console.log("Experiment Viewed", {
+      experimentId: experiment.key,
+      variationId: result.key,
+    });
+  },
+});
+
+let cartOpened = false;
+
+async function bootCartExperience(userId: string) {
+  const userAttributes = {
+    id: userId,
+    // TODO: set the shopper's country for targeting
+    country: "___",
+    // TODO: set whether this shopper is a returning customer
+    returningCustomer: ___,
+  };
+
+  growthbook.setAttributes(userAttributes);
+
+  const initOptions = {
+    // TODO: choose a timeout for SDK initialization
+    timeout: ___,
+    // TODO: decide whether this exercise should use streaming updates
+    streaming: ___,
+  };
+
+  await growthbook.init(initOptions);
+
+  const showExperimentCartPrompt = growthbook._____("cart-open-experiment");
+
+  if (showExperimentCartPrompt) {
+    renderExperimentCartPrompt();
+  } else {
+    renderControlCartPrompt();
+  }
+}
+
+function handleCartOpen() {
+  cartOpened = ___;
+
+  trackCartOpened({
+    experiment: "cart-open-experiment",
+    opened: cartOpened,
+  });
+}
+
+function trackCartOpened(payload: { experiment: string; opened: boolean }) {
+  console.log("Cart opened event", payload);
+}
+
+function renderExperimentCartPrompt() {
+  console.log("Render experiment cart prompt");
+}
+
+function renderControlCartPrompt() {
+  console.log("Render control cart prompt");
+}
+
+bootCartExperience("user-222");</textarea>
+            </div>
           </div>
         </div>
         <button id="submitBtn" 
           class="w-full shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-xl transition-all uppercase tracking-[0.2em] text-[11px] disabled:opacity-30">
-          Analyze Capability
+          Evaluate Solution
         </button>
       </div>
 
@@ -118,7 +271,7 @@
           </div>
 
           <div id="placeholderText" class="flex-grow flex flex-col items-center justify-center p-8 opacity-20">
-            <p class="text-[10px] uppercase tracking-[0.3em] font-black">Awaiting Execution</p>
+            <p class="text-[10px] uppercase tracking-[0.3em] font-black">Awaiting Submission</p>
           </div>
 
           <div id="resultCard" class="hidden flex-grow overflow-y-auto p-6 space-y-6">
@@ -164,7 +317,7 @@
             </div>
 
             <div class="p-4 rounded-xl bg-black/40 border border-white/5">
-              <h4 class="text-[8px] font-black text-slate-600 uppercase tracking-widest mb-3">Architect Critique</h4>
+              <h4 class="text-[8px] font-black text-slate-600 uppercase tracking-widest mb-3">SDK Review</h4>
               <p id="critiqueDisplay" class="text-slate-300 text-[11px] leading-relaxed italic font-medium"></p>
             </div>
           </div>
@@ -175,11 +328,559 @@
     <footer class="mt-auto py-2 border-t border-white/5 flex justify-between items-center text-[9px] font-bold text-slate-600 uppercase tracking-widest shrink-0">
       <div class="flex items-center gap-3">
         <span class="text-blue-500">● LIVE_SESSION</span>
-        <span>JC Pop Digital // Capability Labs</span>
+        <span>GrowthBook JavaScript SDK // Capability Labs</span>
       </div>
       <div class="opacity-50">Local Deployment v2.1.0</div>
     </footer>
   </div>
 
+  <script>
+    (() => {
+      const input = document.getElementById("codeInput");
+      const lineNumbers = document.getElementById("lineNumbers");
+      const highlightLayer = document.getElementById("highlightLayer");
+      const highlightContent = document.getElementById("highlightContent");
+      const submitBtn = document.getElementById("submitBtn");
+      const nextScenario = document.getElementById("nextScenario");
+      const scenarioLevel = document.getElementById("scenarioLevel");
+      const scenarioTitle = document.getElementById("scenarioTitle");
+      const scenarioDesc = document.getElementById("scenarioDesc");
+      const constraintTags = document.getElementById("constraintTags");
+      const loadingStatus = document.getElementById("loadingStatus");
+      const placeholderText = document.getElementById("placeholderText");
+      const resultCard = document.getElementById("resultCard");
+      const scoreDisplay = document.getElementById("scoreDisplay");
+      const statusBadge = document.getElementById("statusBadge");
+      const critiqueDisplay = document.getElementById("critiqueDisplay");
+      const secBar = document.getElementById("secBar");
+      const effBar = document.getElementById("effBar");
+      const readBar = document.getElementById("readBar");
+      const secValue = document.getElementById("secValue");
+      const effValue = document.getElementById("effValue");
+      const readValue = document.getElementById("readValue");
+      const workerUrl = "https://architect-pro-api.jobechoi.workers.dev";
+      let activeScenario = null;
+      let hiddenScaffoldSnapshot = null;
+
+      if (!input || !lineNumbers) return;
+
+      const getScenario = () => ({
+        ...(activeScenario || {}),
+        level: Number(scenarioLevel?.textContent?.replace(/\D/g, "") || "1"),
+        title: scenarioTitle?.textContent?.trim() || "GrowthBook SDK Exercise",
+        description: scenarioDesc?.textContent?.trim() || "",
+        constraints: Array.from(constraintTags?.children || []).map((node) => node.textContent?.trim()).filter(Boolean),
+        starterCode: input.value,
+      });
+
+      const extractFeatureKey = (scenario) => {
+        const text = `${scenario.title || ""} ${scenario.description || ""} ${(scenario.constraints || []).join(" ")}`;
+        const explicitMatch = text.match(/isOn\(["`']([^"`']+)["`']\)/i);
+        if (explicitMatch) return explicitMatch[1];
+
+        const valueMatch = text.match(/getFeatureValue\(["`']([^"`']+)["`']/i);
+        if (valueMatch) return valueMatch[1];
+
+        const quotedMatch = text.match(/["`']([a-z0-9-]+)["`']/i);
+        if (quotedMatch) return quotedMatch[1];
+
+        return "growthbook-feature";
+      };
+
+      const inferExperienceName = (scenario) => {
+        const text = `${scenario.title || ""} ${scenario.description || ""}`.toLowerCase();
+        if (text.includes("checkout")) return "Checkout";
+        if (text.includes("pricing")) return "Pricing";
+        if (text.includes("onboarding")) return "Onboarding";
+        if (text.includes("banner")) return "Banner";
+        if (text.includes("support")) return "Support";
+        if (text.includes("chat")) return "Chat";
+        if (text.includes("web application")) return "WebApplication";
+        if (text.includes("deploy")) return "Experience";
+        return "Experience";
+      };
+
+      const isGrowthBookScenario = (scenario) => {
+        const text = `${scenario.title || ""} ${scenario.description || ""} ${(scenario.constraints || []).join(" ")} ${scenario.starterCode || ""}`.toLowerCase();
+        const growthbookSignals = [
+          "growthbook",
+          "@growthbook/growthbook",
+          "ison(",
+          "getfeaturevalue(",
+          "settrackingcallback",
+          "trackingcallback",
+          "feature flag",
+          "sdk",
+        ];
+        const offTopicSignals = [
+          "aws",
+          "gcp",
+          "azure",
+          "s3",
+          "cloudfront",
+          "iam",
+          "terraform",
+          "pulumi",
+          "bucket",
+          "kubernetes",
+          "web application",
+          "static website",
+        ];
+
+        const hasGrowthBookSignal = growthbookSignals.some((signal) => text.includes(signal));
+        const hasOffTopicSignal = offTopicSignals.some((signal) => text.includes(signal));
+
+        return hasGrowthBookSignal && !hasOffTopicSignal;
+      };
+
+      const getSafeScenario = (scenario) => {
+        if (isGrowthBookScenario(scenario)) return scenario;
+
+        const level = Number(scenario.level || 1) >= 2 ? 2 : 1;
+        if (level >= 2) {
+          return {
+            id: "fallback-level-2",
+            level: 2,
+            title: "Smart Upsell Variant Selection",
+            description: "Advance to a more capable GrowthBook SDK integration for an upsell experiment. Initialize the SDK with less scaffold, attach an exposure tracking callback, and use getFeatureValue(\"smart-upsell-variant\", ...) to choose which upsell variant to render.",
+            constraints: ["Add Tracking Callback", "Use getFeatureValue(\"smart-upsell-variant\", ...)", "Render Variant From SDK Value"],
+          };
+        }
+
+        return {
+          id: "fallback-level-1",
+          level: 1,
+          title: "Cart Open A/B Test Tracking",
+          description: "Finish a beginner GrowthBook JavaScript SDK integration for a cart engagement experiment. Set user targeting attributes, initialize the SDK, and use the cart-open-experiment feature flag to decide which cart prompt to render while tracking whether the shopper actually opened the cart.",
+          constraints: [
+            "Set User Attributes",
+            "Initialize Before Evaluating",
+            "Use isOn(\"cart-open-experiment\")",
+            "Track Whether The Cart Was Opened",
+          ],
+        };
+      };
+
+      const getFallbackStarterCode = (scenario) => {
+        if (typeof scenario.starterCode === "string" && scenario.starterCode.trim()) {
+          return scenario.starterCode;
+        }
+
+        const featureKey = extractFeatureKey(scenario);
+        const experienceName = inferExperienceName(scenario);
+
+        if ((scenario.level || 1) >= 2) {
+          return `import { GrowthBook } from "@growthbook/growthbook";
+
+const growthbook = new GrowthBook({
+  apiHost: "https://cdn.growthbook.io",
+  clientKey: "sdk-abc123",
+  enableDevMode: true,
+});
+
+async function boot${experienceName}(user) {
+  growthbook.setAttributes({
+    id: user.id,
+    plan: user.plan,
+  });
+
+  await growthbook.init({
+    timeout: 1500,
+    streaming: true,
+  });
+
+  const value = growthbook._____("${featureKey}", "control");
+  render${experienceName}(value);
+}
+
+function render${experienceName}(value) {
+  console.log("Render ${experienceName.toLowerCase()}", value);
+}
+
+boot${experienceName}({ id: "user-999", plan: "pro" });`;
+        }
+
+        return `import { GrowthBook } from "@growthbook/growthbook";
+
+const growthbook = new GrowthBook({
+  apiHost: "https://cdn.growthbook.io",
+  clientKey: "sdk-abc123",
+  enableDevMode: true,
+});
+
+async function boot${experienceName}(userId) {
+  // Exercise goal: ${scenario.description || "Complete the GrowthBook SDK integration."}
+  const userAttributes = {
+    id: userId,
+    // TODO: add a targeting attribute for this exercise
+    country: "___",
+    // TODO: add another targeting attribute used in GrowthBook rules
+    paid: ___,
+  };
+
+  growthbook.setAttributes(userAttributes);
+
+  const initOptions = {
+    // TODO: choose a timeout for SDK initialization
+    timeout: ___,
+    // TODO: decide whether this exercise should use streaming updates
+    streaming: ___,
+  };
+
+  await growthbook.init(initOptions);
+
+  const isEnabled = growthbook._____("${featureKey}");
+
+  if (isEnabled) {
+    renderNew${experienceName}();
+  } else {
+    renderClassic${experienceName}();
+  }
+}
+
+function renderNew${experienceName}() {
+  console.log("Render new ${experienceName.toLowerCase()}");
+}
+
+function renderClassic${experienceName}() {
+  console.log("Render classic ${experienceName.toLowerCase()}");
+}
+
+boot${experienceName}("user-123");`;
+      };
+
+      const revealScaffoldAnswers = (code) =>
+        code
+          .replace(/growthbook\._{5}\(\s*\(/g, "growthbook.setTrackingCallback((")
+          .replace(/growthbook\._{5}\(([^,\n]+),/g, "growthbook.getFeatureValue($1,")
+          .replace(/growthbook\._{5}\(([^)\n]+)\)/g, "growthbook.isOn($1)")
+          .replace(/country:\s*"___"/g, 'country: "US"')
+          .replace(/(paid|returningCustomer):\s*___/g, "$1: true")
+          .replace(/timeout:\s*___/g, "timeout: 1500")
+          .replace(/streaming:\s*___/g, "streaming: true")
+          .replace(/cartOpened\s*=\s*___;/g, "cartOpened = true;");
+
+      const escapeHtml = (value) =>
+        value
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+
+      const keywords = new Set(["import", "from", "const", "async", "await", "function", "if", "else", "return", "new"]);
+      const booleans = new Set(["true", "false"]);
+      const operators = ["=>", "===", "!==", "==", "!=", "<=", ">=", "=", "<", ">"];
+
+      const wrapToken = (className, tokenValue) => `<span class="${className}">${escapeHtml(tokenValue)}</span>`;
+      const isIdentifierStart = (char) => /[A-Za-z_$]/.test(char);
+      const isIdentifierPart = (char) => /[A-Za-z0-9_$]/.test(char);
+
+      const highlightCode = (value) => {
+        let result = "";
+        let i = 0;
+
+        while (i < value.length) {
+          const char = value[i];
+          const next = value[i + 1] || "";
+
+          if (char === "/" && next === "/") {
+            let j = i + 2;
+            while (j < value.length && value[j] !== "\n") j++;
+            result += wrapToken("token-comment", value.slice(i, j));
+            i = j;
+            continue;
+          }
+
+          if (char === '"' || char === "'") {
+            const quote = char;
+            let j = i + 1;
+            while (j < value.length) {
+              if (value[j] === "\\" && j + 1 < value.length) {
+                j += 2;
+                continue;
+              }
+              if (value[j] === quote) {
+                j++;
+                break;
+              }
+              j++;
+            }
+            result += wrapToken("token-string", value.slice(i, j));
+            i = j;
+            continue;
+          }
+
+          if (char === "." && value.slice(i, i + 6) === "._____") {
+            result += wrapToken("token-placeholder", "._____");
+            i += 6;
+            continue;
+          }
+
+          if (char === "_" && /^___+/.test(value.slice(i))) {
+            const match = value.slice(i).match(/^___+/);
+            const placeholder = match ? match[0] : "_";
+            result += wrapToken("token-placeholder", placeholder);
+            i += placeholder.length;
+            continue;
+          }
+
+          if (/\d/.test(char)) {
+            let j = i + 1;
+            while (j < value.length && /[\d.]/.test(value[j])) j++;
+            result += wrapToken("token-number", value.slice(i, j));
+            i = j;
+            continue;
+          }
+
+          if (isIdentifierStart(char)) {
+            let j = i + 1;
+            while (j < value.length && isIdentifierPart(value[j])) j++;
+            const word = value.slice(i, j);
+            let k = j;
+            while (k < value.length && /\s/.test(value[k])) k++;
+
+            if (keywords.has(word)) {
+              result += wrapToken("token-keyword", word);
+            } else if (booleans.has(word)) {
+              result += wrapToken("token-boolean", word);
+            } else if (value[k] === "(") {
+              result += wrapToken("token-function", word);
+            } else if (value[k] === ":") {
+              result += wrapToken("token-property", word);
+            } else {
+              result += escapeHtml(word);
+            }
+
+            i = j;
+            continue;
+          }
+
+          const operator = operators.find((candidate) => value.startsWith(candidate, i));
+          if (operator) {
+            result += wrapToken("token-operator", operator);
+            i += operator.length;
+            continue;
+          }
+
+          result += escapeHtml(char);
+          i++;
+        }
+
+        return result || " ";
+      };
+
+      const syncLineNumbers = () => {
+        const lines = Math.max(1, input.value.split("\n").length);
+        lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join("<br>");
+        lineNumbers.scrollTop = input.scrollTop;
+      };
+
+      const syncHighlight = () => {
+        if (!highlightLayer || !highlightContent) return;
+        highlightContent.innerHTML = highlightCode(input.value);
+        highlightLayer.scrollTop = input.scrollTop;
+        highlightLayer.scrollLeft = input.scrollLeft;
+      };
+
+      const syncEditor = () => {
+        syncLineNumbers();
+        syncHighlight();
+      };
+
+      const handleShortcutReveal = (event) => {
+        if (!(event.ctrlKey && event.altKey && event.key.toLowerCase() === "x")) return;
+
+        event.preventDefault();
+
+        if (hiddenScaffoldSnapshot !== null) {
+          input.value = hiddenScaffoldSnapshot;
+          hiddenScaffoldSnapshot = null;
+          syncEditor();
+          return;
+        }
+
+        const revealedCode = revealScaffoldAnswers(input.value);
+        if (revealedCode === input.value) return;
+
+        hiddenScaffoldSnapshot = input.value;
+        input.value = revealedCode;
+        syncEditor();
+      };
+
+      const getToken = () => {
+        let token = sessionStorage.getItem("learner_token");
+        if (token && token.trim()) return token.trim();
+
+        token = window.prompt("Enter your Access Token:");
+        if (token && token.trim()) {
+          sessionStorage.setItem("learner_token", token.trim());
+          return token.trim();
+        }
+
+        return null;
+      };
+
+      const updateBar = (barEl, labelEl, value) => {
+        if (barEl) barEl.style.width = `${value}%`;
+        if (labelEl) labelEl.textContent = `${value}%`;
+      };
+
+      const renderResult = (result) => {
+        if (scoreDisplay) scoreDisplay.textContent = String(result.score ?? 0);
+        if (statusBadge) {
+          statusBadge.textContent = result.status || "Partial";
+          statusBadge.className = `px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-xl ${
+            result.status === "Risk"
+              ? "bg-red-500/20 text-red-500"
+              : result.status === "Partial"
+                ? "bg-yellow-500/20 text-yellow-500"
+                : "bg-emerald-500/20 text-emerald-500"
+          }`;
+        }
+
+        updateBar(secBar, secValue, result.breakdown?.security ?? 0);
+        updateBar(effBar, effValue, result.breakdown?.efficiency ?? 0);
+        updateBar(readBar, readValue, result.breakdown?.readability ?? 0);
+        if (critiqueDisplay) critiqueDisplay.textContent = result.critique || "";
+
+        loadingStatus?.classList.add("hidden");
+        resultCard?.classList.remove("hidden");
+      };
+
+      const renderScenario = (scenario) => {
+        scenario = getSafeScenario(scenario);
+        activeScenario = { ...scenario };
+
+        if (scenarioLevel) scenarioLevel.textContent = `Level ${activeScenario.level || 1}`;
+        if (scenarioTitle) scenarioTitle.textContent = activeScenario.title || "GrowthBook SDK Exercise";
+        if (scenarioDesc) scenarioDesc.textContent = activeScenario.description || "";
+
+        if (constraintTags) {
+          constraintTags.innerHTML = (activeScenario.constraints || [])
+            .map((constraint) => `<span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded text-[8px] font-black tracking-widest">${constraint}</span>`)
+            .join("");
+        }
+
+        input.value = getFallbackStarterCode(activeScenario);
+        hiddenScaffoldSnapshot = null;
+        input.scrollTop = 0;
+        syncEditor();
+
+        resultCard?.classList.add("hidden");
+        placeholderText?.classList.remove("hidden");
+      };
+
+      activeScenario = {
+        ...getSafeScenario(getScenario()),
+      };
+      input.value = activeScenario.starterCode || getFallbackStarterCode(activeScenario);
+      hiddenScaffoldSnapshot = null;
+      input.scrollTop = 0;
+      syncEditor();
+
+      const installFallbackHandlers = () => {
+        if ((window).__sdkLabFallbackInstalled) return;
+        (window).__sdkLabFallbackInstalled = true;
+
+        submitBtn?.addEventListener("click", async () => {
+          if ((window).__sdkLabAppReady) return;
+
+          const code = input.value.trim();
+          if (!code) {
+            window.alert("Please enter code.");
+            return;
+          }
+
+          const token = getToken();
+          if (!token) return;
+
+          resultCard?.classList.add("hidden");
+          placeholderText?.classList.add("hidden");
+          loadingStatus?.classList.remove("hidden");
+          if (submitBtn) submitBtn.disabled = true;
+
+          try {
+            const scenario = getScenario();
+            const res = await fetch(`${workerUrl}/evaluate`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                token,
+                level: scenario.level,
+                code,
+                scenario,
+              }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+              if (res.status === 401) sessionStorage.removeItem("learner_token");
+              throw new Error(data.error || "Evaluation failed");
+            }
+
+            renderResult(data);
+          } catch (error) {
+            loadingStatus?.classList.add("hidden");
+            placeholderText?.classList.remove("hidden");
+            window.alert(`Coach Error: ${error.message}`);
+          } finally {
+            if (submitBtn) submitBtn.disabled = false;
+          }
+        });
+
+        nextScenario?.addEventListener("click", async () => {
+          if ((window).__sdkLabAppReady) return;
+
+          const token = getToken();
+          if (!token) return;
+
+          if (nextScenario) {
+            nextScenario.disabled = true;
+            nextScenario.textContent = "Generating...";
+          }
+
+          try {
+            const res = await fetch(`${workerUrl}/mission`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token, level: 1 }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+              if (res.status === 401) sessionStorage.removeItem("learner_token");
+              throw new Error(data.error || "Exercise generation failed");
+            }
+
+            renderScenario(data);
+          } catch (error) {
+            window.alert(`Mission Error: ${error.message}`);
+          } finally {
+            if (nextScenario) {
+              nextScenario.disabled = false;
+              nextScenario.textContent = "Generate New Exercise";
+            }
+          }
+        });
+      };
+
+      syncEditor();
+      input.addEventListener("input", syncEditor);
+      input.addEventListener("keydown", handleShortcutReveal);
+      input.addEventListener("scroll", () => {
+        lineNumbers.scrollTop = input.scrollTop;
+        if (highlightLayer) {
+          highlightLayer.scrollTop = input.scrollTop;
+          highlightLayer.scrollLeft = input.scrollLeft;
+        }
+      });
+      window.__sdkLabSyncEditor = syncEditor;
+      window.addEventListener("load", syncEditor);
+      window.addEventListener("load", () => {
+        window.setTimeout(() => {
+          if (!(window).__sdkLabAppReady) installFallbackHandlers();
+        }, 250);
+      });
+    })();
+  </script>
 </body>
 </html>
