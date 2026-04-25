@@ -89,11 +89,15 @@
       width: 100%;
       height: 100%;
       z-index: 1;
-      color: transparent;
+      color: #34d399;
       caret-color: #34d399;
       scrollbar-gutter: stable;
       scrollbar-width: thin;
       scrollbar-color: #2d3139 transparent;
+    }
+    
+    .sdk-highlight-ready #codeInput {
+      color: transparent;
     }
     
     #codeInput::selection {
@@ -132,7 +136,7 @@
     
     #resultCard::-webkit-scrollbar-thumb { background: #2d3139; border-radius: 10px; }
   </style>
-  <script type="module" crossorigin src="/eustress-poc/assets/index-BtaiLh63.js"></script>
+  <script type="module" crossorigin src="/eustress-poc/assets/index-DYKYpkw9.js"></script>
 </head>
 <body class="p-4 md:p-6 font-sans">
 
@@ -167,9 +171,23 @@
       </div>
     </section>
 
-    <main class="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-grow overflow-hidden mb-2 min-h-0">
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-grow overflow-visible mb-2 min-h-0">
       
-      <div class="flex flex-col h-full gap-3 min-h-0 overflow-hidden">
+      <div class="relative h-full min-h-0 overflow-visible">
+        <aside class="absolute left-0 top-5 z-20 flex w-20 -translate-x-[calc(100%+0.5rem)] flex-col gap-2" aria-label="SDK language">
+          <div class="text-[8px] font-black uppercase tracking-widest text-slate-600 px-1">SDK</div>
+          <button type="button" data-sdk-language="javascript" class="sdk-language-tab border border-blue-500 bg-blue-500/10 text-blue-300 rounded-xl px-3 py-2 text-left text-[9px] font-black uppercase tracking-widest transition-all">
+            JS
+          </button>
+          <button type="button" data-sdk-language="python" class="sdk-language-tab border border-slate-800 bg-black/30 text-slate-500 hover:text-slate-300 hover:border-slate-700 rounded-xl px-3 py-2 text-left text-[9px] font-black uppercase tracking-widest transition-all">
+            Python
+          </button>
+          <button type="button" data-sdk-language="ios" class="sdk-language-tab border border-slate-800 bg-black/30 text-slate-500 hover:text-slate-300 hover:border-slate-700 rounded-xl px-3 py-2 text-left text-[9px] font-black uppercase tracking-widest transition-all">
+            iOS
+          </button>
+        </aside>
+
+        <div class="flex flex-col h-full gap-3 min-h-0 overflow-hidden">
         <div class="group relative flex-grow flex flex-col min-h-0">
           <div class="absolute -top-2 left-4 bg-obsidian px-2 text-[9px] font-mono text-slate-600 z-10 uppercase tracking-widest">
             Source_Input
@@ -255,6 +273,7 @@ bootCartExperience("user-222");</textarea>
           Evaluate Solution
         </button>
       </div>
+      </div>
 
       <div class="flex flex-col h-full overflow-hidden">
         <div id="feedbackContainer" class="glass h-full rounded-2xl flex flex-col relative overflow-hidden transition-all duration-500">
@@ -328,7 +347,7 @@ bootCartExperience("user-222");</textarea>
     <footer class="mt-auto py-2 border-t border-white/5 flex justify-between items-center text-[9px] font-bold text-slate-600 uppercase tracking-widest shrink-0">
       <div class="flex items-center gap-3">
         <span class="text-blue-500">● LIVE_SESSION</span>
-        <span>GrowthBook JavaScript SDK // Capability Labs</span>
+        <span><span id="sdkLabel">GrowthBook JavaScript SDK</span> // Capability Labs</span>
       </div>
       <div class="opacity-50">Local Deployment v2.1.0</div>
     </footer>
@@ -349,6 +368,7 @@ bootCartExperience("user-222");</textarea>
       const loadingStatus = document.getElementById("loadingStatus");
       const placeholderText = document.getElementById("placeholderText");
       const resultCard = document.getElementById("resultCard");
+      const languageTabs = Array.from(document.querySelectorAll("[data-sdk-language]"));
       const scoreDisplay = document.getElementById("scoreDisplay");
       const statusBadge = document.getElementById("statusBadge");
       const critiqueDisplay = document.getElementById("critiqueDisplay");
@@ -358,11 +378,14 @@ bootCartExperience("user-222");</textarea>
       const secValue = document.getElementById("secValue");
       const effValue = document.getElementById("effValue");
       const readValue = document.getElementById("readValue");
+      const sdkLabel = document.getElementById("sdkLabel");
       const workerUrl = "https://architect-pro-api.jobechoi.workers.dev";
       let activeScenario = null;
       let hiddenScaffoldSnapshot = null;
+      let selectedLanguage = "javascript";
 
       if (!input || !lineNumbers) return;
+      document.body.classList.add("sdk-highlight-ready");
 
       const getScenario = () => ({
         ...(activeScenario || {}),
@@ -371,7 +394,65 @@ bootCartExperience("user-222");</textarea>
         description: scenarioDesc?.textContent?.trim() || "",
         constraints: Array.from(constraintTags?.children || []).map((node) => node.textContent?.trim()).filter(Boolean),
         starterCode: input.value,
+        language: getSelectedLanguage(),
       });
+
+      const getSelectedLanguage = () => selectedLanguage;
+      const getLanguageLabel = (language) => {
+        if (language === "ios") return "iOS";
+        return language === "python" ? "Python" : "JavaScript";
+      };
+      const getSDKDisplayName = (language) => {
+        if (language === "python") return "growthbook Python SDK";
+        if (language === "ios") return "GrowthBook Swift SDK for iOS";
+        return "GrowthBook JavaScript SDK";
+      };
+      const getAppDisplayName = (language) => {
+        if (language === "python") return "Python app";
+        if (language === "ios") return "iOS app";
+        return "JavaScript app";
+      };
+      const getLanguageDescription = (description, language) => {
+        const sdkName = getSDKDisplayName(language);
+        const appName = getAppDisplayName(language);
+
+        let next = description
+          .replace(/growthbook Python SDK|GrowthBook (?:JavaScript|Python|Swift|iOS Swift) SDK(?: for iOS)?/gi, sdkName)
+          .replace(/\bfrontend or full-stack JavaScript app\b/gi, appName)
+          .replace(/\bJavaScript app\b/gi, appName)
+          .replace(/\bPython app\b/gi, appName)
+          .replace(/\biOS app\b/gi, appName);
+
+        if (language === "python") {
+          next = next
+            .replace(/\bisOn\(/g, "is_on(")
+            .replace(/\bgetFeatureValue\(/g, "get_feature_value(")
+            .replace(/\bsetAttributes\(/g, "set_attributes(");
+        } else if (language === "ios") {
+          next = next
+            .replace(/\bisOn\((["`'])/g, "isOn(feature: $1")
+            .replace(/\bgetFeatureValue\((["`'])/g, "getFeatureValue(feature: $1")
+            .replace(/\bsetAttributes\(\.\.\.\)/g, "GrowthBookBuilder attributes");
+        } else {
+          next = next
+            .replace(/\bis_on\(/g, "isOn(")
+            .replace(/\bget_feature_value\(/g, "getFeatureValue(")
+            .replace(/\bGrowthBookBuilder attributes\b/g, "setAttributes(...)");
+        }
+
+        return next;
+      };
+      const parseSDKLanguage = (value) => value === "python" || value === "ios" ? value : "javascript";
+
+      const renderLanguageTabs = (language) => {
+        for (const tab of languageTabs) {
+          const isActive = tab.dataset.sdkLanguage === language;
+          tab.className = isActive
+            ? "sdk-language-tab border border-blue-500 bg-blue-500/10 text-blue-300 rounded-xl px-3 py-2 text-left text-[9px] font-black uppercase tracking-widest transition-all"
+            : "sdk-language-tab border border-slate-800 bg-black/30 text-slate-500 hover:text-slate-300 hover:border-slate-700 rounded-xl px-3 py-2 text-left text-[9px] font-black uppercase tracking-widest transition-all";
+          tab.setAttribute("aria-selected", String(isActive));
+        }
+      };
 
       const extractFeatureKey = (scenario) => {
         const text = `${scenario.title || ""} ${scenario.description || ""} ${(scenario.constraints || []).join(" ")}`;
@@ -461,13 +542,245 @@ bootCartExperience("user-222");</textarea>
         };
       };
 
-      const getFallbackStarterCode = (scenario) => {
-        if (typeof scenario.starterCode === "string" && scenario.starterCode.trim()) {
+      const buildLevelOnePythonScaffold = (scenario) => {
+        const featureKey = extractFeatureKey(scenario);
+        const experienceName = inferExperienceName(scenario).toLowerCase();
+
+        return `from growthbook import GrowthBook
+
+
+def boot_experience(user_id):
+    # Exercise goal: ${scenario.description || "Complete the GrowthBook SDK integration."}
+    attributes = {
+        "id": user_id,
+        # TODO: add a targeting attribute for this exercise
+        "country": "___",
+        # TODO: add another targeting attribute used in GrowthBook rules
+        "paid": ___,
+    }
+
+    gb = GrowthBook(
+        attributes=attributes,
+        api_host="https://cdn.growthbook.io",
+        client_key="sdk-abc123",
+        # TODO: choose a cache TTL for feature refreshes
+        cache_ttl=___,
+    )
+
+    gb.load_features()
+
+    is_enabled = gb._____("${featureKey}")
+
+    if is_enabled:
+        render_new_${experienceName}()
+    else:
+        render_classic_${experienceName}()
+
+
+def render_new_${experienceName}():
+    print("Render new ${experienceName}")
+
+
+def render_classic_${experienceName}():
+    print("Render classic ${experienceName}")
+
+
+boot_experience("user-123")`;
+      };
+
+      const buildLevelTwoPythonScaffold = (scenario) => {
+        const featureKey = extractFeatureKey(scenario);
+        const experienceName = inferExperienceName(scenario).toLowerCase();
+
+        return `from growthbook import GrowthBook
+
+
+def on_experiment_viewed(experiment, result):
+    print("Experiment Viewed", {
+        "experimentId": experiment.key,
+        "variationId": result.key,
+    })
+
+
+def boot_${experienceName}(user):
+    attributes = {
+        "id": user["id"],
+        "plan": user["plan"],
+    }
+
+    gb = GrowthBook(
+        attributes=attributes,
+        on_experiment_viewed=on_experiment_viewed,
+        api_host="https://cdn.growthbook.io",
+        client_key="sdk-abc123",
+        cache_ttl=60,
+    )
+    gb.load_features()
+
+    ${experienceName}_config = gb._____("${featureKey}", "control")
+    render_${experienceName}(${experienceName}_config)
+
+
+def render_${experienceName}(value):
+    print("Render ${experienceName}", value)
+
+
+boot_${experienceName}({"id": "user-999", "plan": "pro"})`;
+      };
+
+      const buildLevelOneIOSScaffold = (scenario) => {
+        const featureKey = extractFeatureKey(scenario);
+        const experienceName = inferExperienceName(scenario);
+
+        return `import Foundation
+import GrowthBook
+
+final class ${experienceName}Controller {
+    func bootExperience(userId: String) {
+        // Exercise goal: ${scenario.description || "Complete the GrowthBook SDK integration."}
+        let attributes: [String: Any] = [
+            "id": userId,
+            // TODO: add a targeting attribute for this exercise
+            "country": "___",
+            // TODO: add another targeting attribute used in GrowthBook rules
+            "paid": ___
+        ]
+
+        var gb: GrowthBookSDK = GrowthBookBuilder(
+            // Your GrowthBook API host
+            apiHost: "https://cdn.growthbook.io",
+            // Your client key
+            clientKey: "sdk-abc123",
+            // Optional: encryption key if your features are encrypted
+            encryptionKey: "abcdef98765",
+            // Required user attributes for targeting
+            attributes: attributes,
+            // Required: called whenever someone is put into an experiment
+            trackingCallback: { experiment, result in
+                print("Experiment Viewed", [
+                    "experimentId": experiment.key,
+                    "variationId": result.key
+                ])
+            },
+            // Optional: real-time updates via SSE
+            backgroundSync: ___,
+            // Optional: called when features are refreshed
+            refreshHandler: { success in
+                print("Features refreshed", success)
+            }
+        ).initializer()
+
+        let isEnabled = gb._____(feature: "${featureKey}")
+
+        if isEnabled {
+            renderNew${experienceName}()
+        } else {
+            renderClassic${experienceName}()
+        }
+    }
+
+    private func renderNew${experienceName}() {
+        print("Render new ${experienceName.toLowerCase()}")
+    }
+
+    private func renderClassic${experienceName}() {
+        print("Render classic ${experienceName.toLowerCase()}")
+    }
+}
+
+${experienceName}Controller().bootExperience(userId: "user-123")`;
+      };
+
+      const buildLevelTwoIOSScaffold = (scenario) => {
+        const featureKey = extractFeatureKey(scenario);
+        const experienceName = inferExperienceName(scenario);
+        const variableName = experienceName.charAt(0).toLowerCase() + experienceName.slice(1);
+
+        return `import Foundation
+import GrowthBook
+
+final class ${experienceName}Controller {
+    private let gb: GrowthBookSDK
+
+    init(userId: String, plan: String) {
+        var gb: GrowthBookSDK = GrowthBookBuilder(
+            // Your GrowthBook API host
+            apiHost: "https://cdn.growthbook.io",
+            // Your client key
+            clientKey: "sdk-abc123",
+            // Optional: encryption key if your features are encrypted
+            encryptionKey: "abcdef98765",
+            // Required user attributes for targeting
+            attributes: [
+                "id": userId,
+                "plan": plan
+            ],
+            // Required: called whenever someone is put into an experiment
+            trackingCallback: { experiment, result in
+                print("Experiment Viewed", [
+                    "experimentId": experiment.key,
+                    "variationId": result.key
+                ])
+            },
+            // Optional: real-time updates via SSE
+            backgroundSync: true,
+            // Optional: called when features are refreshed
+            refreshHandler: { success in
+                print("Features refreshed", success)
+            }
+        ).initializer()
+        self.gb = gb
+    }
+
+    func render() {
+        let ${variableName}Config = gb._____(feature: "${featureKey}", defaultValue: JSON("control"))
+        render${experienceName}(value: ${variableName}Config)
+    }
+
+    private func render${experienceName}(value: JSON) {
+        print("Render ${experienceName.toLowerCase()}", value)
+    }
+}
+
+${experienceName}Controller(userId: "user-999", plan: "pro").render()`;
+      };
+
+      const isStarterCodeForLanguage = (starterCode, language) => {
+        const normalized = starterCode.toLowerCase();
+        if (language === "python") {
+          return normalized.includes("from growthbook import") || normalized.includes("gb.load_features") || normalized.includes("def ");
+        }
+
+        if (language === "ios") {
+          return normalized.includes("growthbookbuilder") || normalized.includes("growthbooksdk") || normalized.includes("ison(feature:");
+        }
+
+        return normalized.includes("@growthbook/growthbook") || normalized.includes("new growthbook") || normalized.includes("growthbook.");
+      };
+
+      const getFallbackStarterCode = (scenario, language = getSelectedLanguage()) => {
+        if (
+          typeof scenario.starterCode === "string" &&
+          scenario.starterCode.trim() &&
+          isStarterCodeForLanguage(scenario.starterCode, language)
+        ) {
           return scenario.starterCode;
         }
 
         const featureKey = extractFeatureKey(scenario);
         const experienceName = inferExperienceName(scenario);
+
+        if (language === "python") {
+          return (scenario.level || 1) >= 2
+            ? buildLevelTwoPythonScaffold(scenario)
+            : buildLevelOnePythonScaffold(scenario);
+        }
+
+        if (language === "ios") {
+          return (scenario.level || 1) >= 2
+            ? buildLevelTwoIOSScaffold(scenario)
+            : buildLevelOneIOSScaffold(scenario);
+        }
 
         if ((scenario.level || 1) >= 2) {
           return `import { GrowthBook } from "@growthbook/growthbook";
@@ -554,10 +867,20 @@ boot${experienceName}("user-123");`;
           .replace(/growthbook\._{5}\(\s*\(/g, "growthbook.setTrackingCallback((")
           .replace(/growthbook\._{5}\(([^,\n]+),/g, "growthbook.getFeatureValue($1,")
           .replace(/growthbook\._{5}\(([^)\n]+)\)/g, "growthbook.isOn($1)")
+          .replace(/growthBook\?\._{5}\(feature:/g, "growthBook?.isOn(feature:")
+          .replace(/growthBook\._{5}\(feature:([^,\n]+),\s*defaultValue:/g, "growthBook.getFeatureValue(feature:$1, defaultValue:")
+          .replace(/gb\._{5}\(feature:([^,\n]+),\s*defaultValue:/g, "gb.getFeatureValue(feature:$1, defaultValue:")
+          .replace(/gb\._{5}\(feature:/g, "gb.isOn(feature:")
+          .replace(/gb\._{5}\(([^,\n]+),/g, "gb.get_feature_value($1,")
+          .replace(/gb\._{5}\(([^)\n]+)\)/g, "gb.is_on($1)")
           .replace(/country:\s*"___"/g, 'country: "US"')
+          .replace(/"country":\s*"___"/g, '"country": "US"')
           .replace(/(paid|returningCustomer):\s*___/g, "$1: true")
+          .replace(/"(paid|returning_customer)":\s*___/g, '"$1": True')
           .replace(/timeout:\s*___/g, "timeout: 1500")
           .replace(/streaming:\s*___/g, "streaming: true")
+          .replace(/backgroundSync:\s*___/g, "backgroundSync: false")
+          .replace(/cache_ttl=___/g, "cache_ttl=60")
           .replace(/cartOpened\s*=\s*___;/g, "cartOpened = true;");
 
       const escapeHtml = (value) =>
@@ -566,8 +889,8 @@ boot${experienceName}("user-123");`;
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;");
 
-      const keywords = new Set(["import", "from", "const", "async", "await", "function", "if", "else", "return", "new"]);
-      const booleans = new Set(["true", "false"]);
+      const keywords = new Set(["import", "from", "const", "async", "await", "function", "if", "else", "return", "new", "def", "final", "class", "private", "func", "let", "var"]);
+      const booleans = new Set(["true", "false", "True", "False"]);
       const operators = ["=>", "===", "!==", "==", "!=", "<=", ">=", "=", "<", ">"];
 
       const wrapToken = (className, tokenValue) => `<span class="${className}">${escapeHtml(tokenValue)}</span>`;
@@ -582,8 +905,8 @@ boot${experienceName}("user-123");`;
           const char = value[i];
           const next = value[i + 1] || "";
 
-          if (char === "/" && next === "/") {
-            let j = i + 2;
+          if ((char === "/" && next === "/") || char === "#") {
+            let j = char === "#" ? i + 1 : i + 2;
             while (j < value.length && value[j] !== "\n") j++;
             result += wrapToken("token-comment", value.slice(i, j));
             i = j;
@@ -747,12 +1070,14 @@ boot${experienceName}("user-123");`;
       };
 
       const renderScenario = (scenario) => {
+        const language = getSelectedLanguage();
+        const languageLabel = getLanguageLabel(language);
         scenario = getSafeScenario(scenario);
-        activeScenario = { ...scenario };
+        activeScenario = { ...scenario, language };
 
         if (scenarioLevel) scenarioLevel.textContent = `Level ${activeScenario.level || 1}`;
         if (scenarioTitle) scenarioTitle.textContent = activeScenario.title || "GrowthBook SDK Exercise";
-        if (scenarioDesc) scenarioDesc.textContent = activeScenario.description || "";
+        if (scenarioDesc) scenarioDesc.textContent = getLanguageDescription(activeScenario.description || "", language);
 
         if (constraintTags) {
           constraintTags.innerHTML = (activeScenario.constraints || [])
@@ -760,7 +1085,10 @@ boot${experienceName}("user-123");`;
             .join("");
         }
 
-        input.value = getFallbackStarterCode(activeScenario);
+        input.placeholder = `// Fill in the missing GrowthBook ${languageLabel} SDK code...`;
+        if (sdkLabel) sdkLabel.textContent = `GrowthBook ${languageLabel} SDK`;
+        renderLanguageTabs(language);
+        input.value = getFallbackStarterCode(activeScenario, language);
         hiddenScaffoldSnapshot = null;
         input.scrollTop = 0;
         syncEditor();
@@ -772,7 +1100,7 @@ boot${experienceName}("user-123");`;
       activeScenario = {
         ...getSafeScenario(getScenario()),
       };
-      input.value = activeScenario.starterCode || getFallbackStarterCode(activeScenario);
+      input.value = getFallbackStarterCode(activeScenario, getSelectedLanguage());
       hiddenScaffoldSnapshot = null;
       input.scrollTop = 0;
       syncEditor();
@@ -805,9 +1133,10 @@ boot${experienceName}("user-123");`;
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 token,
+                language: getSelectedLanguage(),
                 level: scenario.level,
                 code,
-                scenario,
+                scenario: { ...scenario, language: getSelectedLanguage() },
               }),
             });
 
@@ -842,7 +1171,7 @@ boot${experienceName}("user-123");`;
             const res = await fetch(`${workerUrl}/mission`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ token, level: 1 }),
+              body: JSON.stringify({ token, level: 1, language: getSelectedLanguage() }),
             });
 
             const data = await res.json();
@@ -865,6 +1194,15 @@ boot${experienceName}("user-123");`;
 
       syncEditor();
       input.addEventListener("input", syncEditor);
+      for (const tab of languageTabs) {
+        tab.addEventListener("click", () => {
+          const nextLanguage = parseSDKLanguage(tab.dataset.sdkLanguage);
+          if (nextLanguage === selectedLanguage) return;
+
+          selectedLanguage = nextLanguage;
+          renderScenario(activeScenario || getScenario());
+        });
+      }
       input.addEventListener("keydown", handleShortcutReveal);
       input.addEventListener("scroll", () => {
         lineNumbers.scrollTop = input.scrollTop;
