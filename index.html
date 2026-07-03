@@ -26,41 +26,115 @@
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-    
-    body { 
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      height: 100%;
+    }
+
+    body {
       background: radial-gradient(circle at top left, #1a1c23, #0b0e14);
       color: #cbd5e1;
-      height: 100vh;
-      overflow: hidden; /* Prevents whole-page scrolling */
+      min-height: 100dvh;
+      height: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
-    
+
+    @media (min-width: 1024px) {
+      body {
+        height: 100dvh;
+        overflow: hidden;
+      }
+    }
+
+    .app-shell {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 1024px) {
+      .app-shell {
+        height: 100%;
+        min-height: 0;
+      }
+    }
+
+    .sdk-language-tab {
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 44px;
+      border: 1px solid rgb(30 41 59);
+      background: rgba(0, 0, 0, 0.3);
+      color: rgb(100 116 139);
+      border-radius: 0.75rem;
+      padding: 0.625rem 0.75rem;
+      text-align: center;
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      touch-action: manipulation;
+    }
+
+    @media (min-width: 640px) {
+      .sdk-language-tab {
+        flex: 0 1 auto;
+        min-width: 4.5rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .sdk-language-tab {
+        flex: none;
+        min-height: 0;
+        min-width: 0;
+        width: 100%;
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+      }
+    }
+
+    .sdk-language-tab:hover {
+      color: rgb(203 213 225);
+      border-color: rgb(51 65 85);
+    }
+
+    .sdk-language-tab[aria-selected="true"] {
+      border-color: rgb(59 130 246);
+      background: rgba(59, 130, 246, 0.1);
+      color: rgb(147 197 253);
+    }
+
     .glass {
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    
+
     #codeInput::-webkit-scrollbar { width: 4px; height: 4px; }
-    
+
     #codeInput::-webkit-scrollbar-track { background: transparent; }
-    
+
     #codeInput::-webkit-scrollbar-thumb { background: #2d3139; border-radius: 10px; }
-    
+
     #codePane {
       position: relative;
       flex: 1 1 auto;
       min-width: 0;
     }
-    
+
     #highlightLayer,
     #codeInput {
       font-family: "JetBrains Mono", monospace;
-      font-size: 0.75rem;
+      font-size: clamp(0.6875rem, 2.8vw, 0.75rem);
       line-height: 1.65;
       white-space: pre;
       tab-size: 2;
     }
-    
+
     #highlightLayer {
       position: absolute;
       inset: 0;
@@ -71,7 +145,7 @@
       pointer-events: none;
       user-select: none;
     }
-    
+
     #highlightLayer code {
       display: block;
       min-height: 100%;
@@ -82,7 +156,7 @@
       line-height: inherit;
       white-space: pre;
     }
-    
+
     #codeInput {
       position: absolute;
       inset: 0;
@@ -95,73 +169,78 @@
       scrollbar-width: thin;
       scrollbar-color: #2d3139 transparent;
     }
-    
+
     .sdk-highlight-ready #codeInput {
       color: transparent;
     }
-    
+
     #codeInput::selection {
       background: rgba(59, 130, 246, 0.35);
       color: transparent;
     }
-    
+
     #codeInput::-moz-selection {
       background: rgba(59, 130, 246, 0.35);
       color: transparent;
     }
-    
-    .token-comment { color: #6b7280; }
-    
-    .token-keyword { color: #c084fc; }
-    
-    .token-string { color: #fbbf24; }
-    
-    .token-number { color: #f97316; }
-    
-    .token-function { color: #60a5fa; }
-    
-    .token-property { color: #22d3ee; }
-    
-    .token-boolean { color: #fb7185; }
-    
-    .token-operator { color: #e5e7eb; }
-    
-    .token-placeholder { color: #f43f5e; font-weight: 700; }
-    
-    /* Custom Scrollbar for the Result Area */
-    
-    #resultCard::-webkit-scrollbar { width: 4px; }
-    
-    #resultCard::-webkit-scrollbar-track { background: transparent; }
-    
-    #resultCard::-webkit-scrollbar-thumb { background: #2d3139; border-radius: 10px; }
-  </style>
-  <script type="module" crossorigin src="/eustress-poc/assets/index-DYKYpkw9.js"></script>
-</head>
-<body class="p-4 md:p-6 font-sans">
 
-  <div class="max-w-6xl mx-auto h-full flex flex-col">
-    
-    <header class="flex items-center justify-between mb-4 border-b border-white/5 pb-3 shrink-0">
-      <div>
-        <h1 class="text-lg font-black text-white tracking-tighter uppercase leading-none">
+    .token-comment { color: #6b7280; }
+
+    .token-keyword { color: #c084fc; }
+
+    .token-string { color: #fbbf24; }
+
+    .token-number { color: #f97316; }
+
+    .token-function { color: #60a5fa; }
+
+    .token-property { color: #22d3ee; }
+
+    .token-boolean { color: #fb7185; }
+
+    .token-operator { color: #e5e7eb; }
+
+    .token-placeholder { color: #f43f5e; font-weight: 700; }
+
+    /* Custom Scrollbar for the Result Area */
+
+    #resultCard::-webkit-scrollbar { width: 4px; }
+
+    #resultCard::-webkit-scrollbar-track { background: transparent; }
+
+    #resultCard::-webkit-scrollbar-thumb { background: #2d3139; border-radius: 10px; }
+
+    #resultCard,
+    #codeInput {
+      -webkit-overflow-scrolling: touch;
+    }
+  </style>
+  <script type="module" crossorigin src="/eustress-poc/assets/index-BRIv7LdL.js"></script>
+</head>
+<body class="p-3 sm:p-4 md:p-6 font-sans pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+
+  <div class="app-shell max-w-6xl mx-auto lg:pl-[5.5rem] w-full min-w-0">
+
+    <header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 border-b border-white/5 pb-3 shrink-0">
+      <div class="min-w-0">
+        <h1 class="text-base sm:text-lg font-black text-white tracking-tighter uppercase leading-none">
           GrowthBook<span class="text-blue-500">SDK Lab</span>
         </h1>
         <p class="text-[9px] text-slate-500 font-mono mt-1 uppercase tracking-widest">Feature_Flag_Coach_v2.1</p>
       </div>
-      <button id="nextScenario" class="text-[9px] font-bold uppercase tracking-widest text-slate-500 hover:text-white border border-slate-800 px-3 py-1.5 rounded-full transition-all">
+      <button id="nextScenario" class="w-full sm:w-auto shrink-0 text-[9px] font-bold uppercase tracking-widest text-slate-500 hover:text-white border border-slate-800 px-3 py-2.5 sm:py-1.5 rounded-full transition-all touch-manipulation">
         Generate New Exercise
       </button>
     </header>
 
-    <section class="glass bg-blue-900/10 border-blue-500/20 p-4 rounded-2xl mb-4 relative overflow-hidden shrink-0">
+    <section class="glass bg-blue-900/10 border-blue-500/20 p-3 sm:p-4 rounded-2xl mb-3 sm:mb-4 relative overflow-hidden shrink-0">
       <div class="relative z-10">
-        <div class="flex items-center gap-2 mb-1">
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
           <span class="text-[8px] bg-blue-500/20 text-blue-400 font-black px-1.5 py-0.5 rounded tracking-widest uppercase">Exercise</span>
           <span id="scenarioLevel" class="text-[8px] bg-emerald-500/20 text-emerald-400 font-black px-1.5 py-0.5 rounded tracking-widest uppercase">Level 1</span>
-          <h2 id="scenarioTitle" class="text-[11px] font-bold text-white tracking-tight uppercase italic">Cart Open A/B Test Tracking</h2>
+          <h2 id="scenarioTitle" class="basis-full sm:basis-auto min-w-0 text-[11px] font-bold text-white tracking-tight uppercase italic">Cart Open A/B Test Tracking</h2>
         </div>
-        <p id="scenarioDesc" class="text-slate-400 text-xs leading-snug mb-3 max-w-4xl">Finish a beginner GrowthBook JavaScript SDK integration for a cart engagement experiment. Set user targeting attributes, initialize the SDK, and use the <code>cart-open-experiment</code> feature flag to decide which cart prompt to render while tracking whether the shopper actually opened the cart.</p>
+        <p id="scenarioDesc" class="text-slate-400 text-xs sm:text-sm leading-relaxed mb-3 max-w-4xl">Finish a beginner GrowthBook JavaScript SDK integration for a cart engagement experiment. Set user targeting attributes, initialize the SDK, and use the <code>cart-open-experiment</code> feature flag to decide which cart prompt to render while tracking whether the shopper actually opened the cart.</p>
         <div id="constraintTags" class="flex flex-wrap gap-2">
           <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded text-[8px] font-black tracking-widest">Set User Attributes</span>
           <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded text-[8px] font-black tracking-widest">Initialize Before Evaluating</span>
@@ -171,28 +250,29 @@
       </div>
     </section>
 
-    <main class="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-grow overflow-visible mb-2 min-h-0">
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 flex-grow mb-2 min-h-0 lg:overflow-hidden">
       
-      <div class="relative h-full min-h-0 overflow-visible">
-        <aside class="absolute left-0 top-5 z-20 flex w-20 -translate-x-[calc(100%+0.5rem)] flex-col gap-2" aria-label="SDK language">
-          <div class="text-[8px] font-black uppercase tracking-widest text-slate-600 px-1">SDK</div>
-          <button type="button" data-sdk-language="javascript" class="sdk-language-tab border border-blue-500 bg-blue-500/10 text-blue-300 rounded-xl px-3 py-2 text-left text-[9px] font-black uppercase tracking-widest transition-all">
+      <div class="relative flex flex-col min-h-0 lg:h-full lg:overflow-visible">
+        <aside class="flex flex-row flex-wrap items-center gap-2 mb-3 shrink-0 lg:absolute lg:left-0 lg:top-5 lg:z-20 lg:mb-0 lg:w-20 lg:flex-col lg:items-stretch lg:-translate-x-[calc(100%+0.75rem)]" aria-label="SDK language">
+          <div class="hidden lg:block text-[8px] font-black uppercase tracking-widest text-slate-600 px-1">SDK</div>
+          <div class="w-full lg:hidden text-[8px] font-black uppercase tracking-widest text-slate-600">SDK Language</div>
+          <button type="button" data-sdk-language="javascript" class="sdk-language-tab" aria-selected="true">
             JS
           </button>
-          <button type="button" data-sdk-language="python" class="sdk-language-tab border border-slate-800 bg-black/30 text-slate-500 hover:text-slate-300 hover:border-slate-700 rounded-xl px-3 py-2 text-left text-[9px] font-black uppercase tracking-widest transition-all">
+          <button type="button" data-sdk-language="python" class="sdk-language-tab" aria-selected="false">
             Python
           </button>
-          <button type="button" data-sdk-language="ios" class="sdk-language-tab border border-slate-800 bg-black/30 text-slate-500 hover:text-slate-300 hover:border-slate-700 rounded-xl px-3 py-2 text-left text-[9px] font-black uppercase tracking-widest transition-all">
+          <button type="button" data-sdk-language="ios" class="sdk-language-tab" aria-selected="false">
             iOS
           </button>
         </aside>
 
-        <div class="flex flex-col h-full gap-3 min-h-0 overflow-hidden">
-        <div class="group relative flex-grow flex flex-col min-h-0">
-          <div class="absolute -top-2 left-4 bg-obsidian px-2 text-[9px] font-mono text-slate-600 z-10 uppercase tracking-widest">
+        <div class="flex flex-col gap-3 min-h-0 lg:h-full lg:overflow-hidden">
+        <div class="group relative flex flex-col flex-grow min-h-[280px] sm:min-h-[320px] lg:min-h-0">
+          <div class="absolute -top-2 left-3 sm:left-4 bg-obsidian px-2 text-[9px] font-mono text-slate-600 z-10 uppercase tracking-widest">
             Source_Input
           </div>
-          <div id="editorWrap" class="flex-grow flex bg-black border border-slate-800 rounded-2xl overflow-hidden focus-within:border-blue-500 transition-all shadow-inner min-h-0">
+          <div id="editorWrap" class="flex-grow flex bg-black border border-slate-800 rounded-2xl overflow-hidden focus-within:border-blue-500 transition-all shadow-inner min-h-[240px] sm:min-h-[280px] lg:min-h-0">
             <div id="lineNumbers" class="py-5 pl-3 pr-2 text-right text-slate-600 font-mono text-xs leading-[1.65] select-none shrink-0 overflow-hidden">1</div>
             <div id="codePane">
               <pre id="highlightLayer" aria-hidden="true"><code id="highlightContent"></code></pre>
@@ -269,14 +349,14 @@ bootCartExperience("user-222");</textarea>
           </div>
         </div>
         <button id="submitBtn" 
-          class="w-full shrink-0 bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-xl transition-all uppercase tracking-[0.2em] text-[11px] disabled:opacity-30">
+          class="w-full shrink-0 bg-blue-600 hover:bg-blue-500 active:bg-blue-400 text-white font-black py-3.5 sm:py-3 rounded-xl transition-all uppercase tracking-[0.2em] text-[11px] disabled:opacity-30 touch-manipulation">
           Evaluate Solution
         </button>
       </div>
       </div>
 
-      <div class="flex flex-col h-full overflow-hidden">
-        <div id="feedbackContainer" class="glass h-full rounded-2xl flex flex-col relative overflow-hidden transition-all duration-500">
+      <div class="flex flex-col min-h-[320px] sm:min-h-[360px] lg:h-full lg:min-h-0 lg:overflow-hidden">
+        <div id="feedbackContainer" class="glass h-full min-h-[320px] sm:min-h-[360px] lg:min-h-0 rounded-2xl flex flex-col relative overflow-hidden transition-all duration-500">
           
           <div class="bg-white/5 px-4 py-2 border-b border-white/5 flex justify-between items-center shrink-0">
             <span class="text-[9px] font-black tracking-widest text-slate-600 uppercase">Analysis_Console</span>
@@ -293,11 +373,11 @@ bootCartExperience("user-222");</textarea>
             <p class="text-[10px] uppercase tracking-[0.3em] font-black">Awaiting Submission</p>
           </div>
 
-          <div id="resultCard" class="hidden flex-grow overflow-y-auto p-6 space-y-6">
+          <div id="resultCard" class="hidden flex-grow overflow-y-auto p-4 sm:p-6 space-y-5 sm:space-y-6">
             
-            <div class="flex items-center justify-between">
+            <div class="flex flex-wrap items-center justify-between gap-3">
               <div class="flex items-baseline gap-1">
-                <span id="scoreDisplay" class="text-6xl font-black text-white tracking-tighter leading-none">0</span>
+                <span id="scoreDisplay" class="text-5xl sm:text-6xl font-black text-white tracking-tighter leading-none">0</span>
                 <span class="text-xl font-bold text-slate-600">%</span>
               </div>
               <div id="statusBadge" class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-xl"></div>
@@ -344,12 +424,12 @@ bootCartExperience("user-222");</textarea>
       </div>
     </main>
 
-    <footer class="mt-auto py-2 border-t border-white/5 flex justify-between items-center text-[9px] font-bold text-slate-600 uppercase tracking-widest shrink-0">
-      <div class="flex items-center gap-3">
-        <span class="text-blue-500">● LIVE_SESSION</span>
-        <span><span id="sdkLabel">GrowthBook JavaScript SDK</span> // Capability Labs</span>
+    <footer class="mt-auto py-2 border-t border-white/5 flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center text-[9px] font-bold text-slate-600 uppercase tracking-widest shrink-0">
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0">
+        <span class="text-blue-500 shrink-0">● LIVE_SESSION</span>
+        <span class="min-w-0 truncate sm:whitespace-normal"><span id="sdkLabel">GrowthBook JavaScript SDK</span> // Capability Labs</span>
       </div>
-      <div class="opacity-50">Local Deployment v2.1.0</div>
+      <div class="opacity-50 shrink-0 hidden sm:block">Local Deployment v2.1.0</div>
     </footer>
   </div>
 
@@ -447,9 +527,6 @@ bootCartExperience("user-222");</textarea>
       const renderLanguageTabs = (language) => {
         for (const tab of languageTabs) {
           const isActive = tab.dataset.sdkLanguage === language;
-          tab.className = isActive
-            ? "sdk-language-tab border border-blue-500 bg-blue-500/10 text-blue-300 rounded-xl px-3 py-2 text-left text-[9px] font-black uppercase tracking-widest transition-all"
-            : "sdk-language-tab border border-slate-800 bg-black/30 text-slate-500 hover:text-slate-300 hover:border-slate-700 rounded-xl px-3 py-2 text-left text-[9px] font-black uppercase tracking-widest transition-all";
           tab.setAttribute("aria-selected", String(isActive));
         }
       };
