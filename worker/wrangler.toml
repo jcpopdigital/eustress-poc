@@ -1,0 +1,14 @@
+name = "architect-pro-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+# After deploying, set your secrets with:
+#   npx wrangler secret put GEMINI_API_KEY
+#   npx wrangler secret put VALID_TOKENS
+#
+# VALID_TOKENS should be a JSON array of strings, e.g.:
+#   ["token-abc123", "token-def456", "token-student-01"]
+#
+# For local dev, create a .dev.vars file (gitignored) with:
+#   GEMINI_API_KEY=your-key-here
+#   VALID_TOKENS=["dev-token"]
